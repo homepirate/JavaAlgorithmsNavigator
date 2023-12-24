@@ -56,17 +56,31 @@ public class NavigatorImpl implements Navigator {
     @Override
     public Iterable<Route> searchRoutes(String startPoint, String endPoint) {
         List<Route> matchingRoutes = new ArrayList<>();
+        List<Route> favoriteRoutes = new ArrayList<>();
+
         for (Entry<Route> entry : routesTable) {
             List<String> locationPoints = entry.getValue().getLocationPoints();
             if (locationPoints.get(0).equals(startPoint) && !locationPoints.get(0).equals(endPoint) && locationPoints.contains(endPoint)) {
-                matchingRoutes.add(entry.getValue());
+                Route route = entry.getValue();
+                if (route.isFavorite()) {
+                    favoriteRoutes.add(route);
+                } else {
+                    matchingRoutes.add(route);
+                }
             }
         }
 
+        Collections.sort(favoriteRoutes,  (r1, r2) -> Integer.compare(r2.getPopularity(), r1.getPopularity()));
+
         Collections.sort(matchingRoutes, (r1, r2) -> Integer.compare(r2.getPopularity(), r1.getPopularity()));
 
-        return matchingRoutes;
+        List<Route> result = new ArrayList<>();
+        result.addAll(favoriteRoutes);
+        result.addAll(matchingRoutes);
+
+        return result;
     }
+
 
 
 

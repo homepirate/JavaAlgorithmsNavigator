@@ -13,6 +13,9 @@ public class Main {
         Route route8 = new Route("route8", Arrays.asList("И", "Ф", "E"), true);
         Route route9 = new Route("route9", Arrays.asList("A", "E", "K", "B"), true);
         Route route10 = new Route("route10", Arrays.asList("E", "K"), true);
+        Route route11 = new Route("route11", Arrays.asList("A", "K", "E", "M"), false);
+        Route route12 = new Route("route12", Arrays.asList("A", "E", "M"), false);
+
         Route route4 = new Route("route4", Arrays.asList("C", "D", "K", "F"), true);
 
         // Добавляем маршруты в навигатор
@@ -24,6 +27,8 @@ public class Main {
         navigator.addRoute(route8);
         navigator.addRoute(route9);
         navigator.addRoute(route10);
+        navigator.addRoute(route11);
+        navigator.addRoute(route12);
 
         // Проверяем наличие маршрутов в навигаторе
         System.out.println("Наличие маршрута route1: " + navigator.contains(route1)); // true
@@ -48,6 +53,7 @@ public class Main {
         navigator.chooseRoute("route4");
         navigator.chooseRoute("route4");
         navigator.chooseRoute("route4");
+        navigator.chooseRoute("route12");
 
 
         System.out.println("Обновленный маршрут route3: " + navigator.getRoute("route3")); // Route(id=route3, locationPoints=[A, C, E], favorite=true, popularity=1)
