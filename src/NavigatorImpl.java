@@ -60,6 +60,7 @@ public class NavigatorImpl implements Navigator {
 
         for (Entry<Route> entry : routesTable) {
             List<String> locationPoints = entry.getValue().getLocationPoints();
+//            if (locationPoints.get(0).equals(startPoint) && !locationPoints.get(0).equals(endPoint) && locationPoints.contains(endPoint)) {
             if (locationPoints.get(0).equals(startPoint) && !locationPoints.get(0).equals(endPoint) && locationPoints.get(locationPoints.size()-1).equals(endPoint)) {
                 Route route = entry.getValue();
                 if (route.isFavorite()) {
