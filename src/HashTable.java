@@ -187,7 +187,7 @@ public class HashTable<T> implements Iterable<Entry<T>> {
     }
 
     public double getLoadFactor(){
-        return (double) (this.size() + 1) / this.capacity();
+        return (double) (this.size()) / this.capacity();
     }
 
 }
