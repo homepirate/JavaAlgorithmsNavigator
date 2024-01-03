@@ -8,9 +8,9 @@ public class Route {
     private boolean isFavorite;
     private List<String> locationPoints;
 
-    public Route(String id, List<String> locationPoints, boolean isFavorite) {
+    public Route(String id, double distance, List<String> locationPoints, boolean isFavorite) {
         this.id = id;
-        this.distance = locationPoints.size() - 1; // По умолчанию расстояние равно 0
+        this.distance = distance;
         this.popularity = 0; // По умолчанию популярность равна 0
         this.isFavorite = isFavorite;
         this.locationPoints = locationPoints;
@@ -61,12 +61,14 @@ public class Route {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Route route = (Route) o;
-        return Objects.equals(id, route.id);
+        return Double.compare(route.getDistance(), getDistance()) == 0 &&
+                Objects.equals(getLocationPoints().get(0), route.getLocationPoints().get(0)) &&
+                Objects.equals(getLocationPoints().get(getLocationPoints().size() - 1), route.getLocationPoints().get(route.getLocationPoints().size() - 1));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+     return Objects.hash(getLocationPoints().get(0), getLocationPoints().get(getLocationPoints().size() - 1), getDistance());
     }
 
     @Override

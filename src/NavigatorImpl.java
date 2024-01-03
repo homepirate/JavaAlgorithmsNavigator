@@ -1,22 +1,17 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NavigatorImpl implements Navigator {
     private HashTable<Route> routesTable;
-    private HashTable<Route> favoriteRoutes;
-    private HashTable<Route> topRoutes;
+
 
     public NavigatorImpl() {
         routesTable = new HashTable<>();
-        favoriteRoutes = new HashTable<>();
-        topRoutes = new HashTable<>();
     }
 
     @Override
     public void addRoute(Route route) {
         routesTable.add(route.getId(), route);
-        if (route.isFavorite()) {
-            favoriteRoutes.add(route.getId(), route);
-        }
     }
 
     @Override
@@ -24,8 +19,6 @@ public class NavigatorImpl implements Navigator {
         Route route = routesTable.get(routeId);
         if (route != null) {
             routesTable.remove(routeId);
-            favoriteRoutes.remove(routeId);
-            topRoutes.remove(routeId);
         }
     }
 
@@ -49,7 +42,6 @@ public class NavigatorImpl implements Navigator {
         Route route = routesTable.get(routeId);
         if (route != null) {
             route.setPopularity(route.getPopularity() + 1);
-            topRoutes.add(route.getId(), route);
         }
     }
 
@@ -71,13 +63,28 @@ public class NavigatorImpl implements Navigator {
             }
         }
 
-        Collections.sort(favoriteRoutes,  (r1, r2) -> Integer.compare(r2.getPopularity(), r1.getPopularity()));
 
-        Collections.sort(matchingRoutes, (r1, r2) -> Integer.compare(r2.getPopularity(), r1.getPopularity()));
+//        favoriteRoutes.sort(Comparator.comparingInt((Route r) -> r.getLocationPoints().size())
+//                .thenComparingInt(Route::getPopularity).reversed());
+//
+//        matchingRoutes.sort(Comparator.comparingInt((Route r) -> r.getLocationPoints().size())
+//                .thenComparingInt(Route::getPopularity).reversed());
+
+
+        favoriteRoutes.sort(Comparator.comparingDouble((Route r) -> r.getDistance())
+                .thenComparingInt(Route::getPopularity).reversed());
+
+        matchingRoutes.sort(Comparator.comparingDouble((Route r) -> r.getDistance())
+                .thenComparingInt(Route::getPopularity).reversed());
+
 
         List<Route> result = new ArrayList<>();
         result.addAll(favoriteRoutes);
         result.addAll(matchingRoutes);
+
+
+        //        отбрасываем дубликаты
+        result = result.stream().distinct().collect(Collectors.toList());
 
         return result;
     }
@@ -89,42 +96,57 @@ public class NavigatorImpl implements Navigator {
     @Override
     public Iterable<Route> getFavoriteRoutes(String destinationPoint) {
         List<Route> matchingRoutes = new ArrayList<>();
-        for (Entry<Route> entry : favoriteRoutes) {
+        for (Entry<Route> entry : routesTable) {
             List<String> locationPoints = entry.getValue().getLocationPoints();
-            if (!locationPoints.get(0).equals(destinationPoint) && locationPoints.contains(destinationPoint)) {
+            if (entry.getValue().isFavorite() && !locationPoints.get(0).equals(destinationPoint) && locationPoints.contains(destinationPoint)) {
                 matchingRoutes.add(entry.getValue());
             }
         }
 
-        Collections.sort(matchingRoutes, Comparator.comparingDouble(Route::getDistance));
+        Collections.sort(matchingRoutes, Comparator.comparingDouble(Route::getDistance).reversed()
+                .thenComparingInt(Route::getPopularity).reversed());
 
-        Collections.sort(matchingRoutes, (r1, r2) -> Integer.compare(r2.getPopularity(), r1.getPopularity()));
+
+        //        отбрасываем дубликаты
+        matchingRoutes = matchingRoutes.stream().distinct().collect(Collectors.toList());
 
         return matchingRoutes;
     }
 
 
+
     @Override
     public Iterable<Route> getTop3Routes() {
-        List<Route> topRoutesList = new ArrayList<>(topRoutes.size());
+        List<Route> topRoutesList = new ArrayList<>();
 
-        // Сначала добавляем все маршруты из topRoutes в список
-        for (Entry<Route> entry : topRoutes) {
+        for (Entry<Route> entry : routesTable) {
             topRoutesList.add(entry.getValue());
         }
 
-        // Сортируем список по популярности (по убыванию)
-        Collections.sort(topRoutesList, (r1, r2) -> Integer.compare(r2.getPopularity(), r1.getPopularity()));
+        Collections.sort(topRoutesList, (r1, r2) -> {
+            // Сначала сортируем список по популярности
+            int popularityComparison = Integer.compare(r2.getPopularity(), r1.getPopularity());
+            if (popularityComparison != 0) {
+                return popularityComparison;
+            }
 
-        // Затем сортируем список по расстоянию (по возрастанию)
-        Collections.sort(topRoutesList, Comparator.comparingDouble(Route::getDistance));
+            // Затем сортируем список по расстоянию (по возрастанию)
+            int distanceComparison = Double.compare(r1.getDistance(), r2.getDistance());
+            if (distanceComparison != 0) {
+                return distanceComparison;
+            }
 
-        // В конце сортируем список по количеству точек местоположения (по возрастанию)
-        Collections.sort(topRoutesList, Comparator.comparingInt(route -> route.getLocationPoints().size()));
+            // В конце сортируем список по количеству точек местоположения (по возрастанию)
+            return Integer.compare(r1.getLocationPoints().size(), r2.getLocationPoints().size());
+        });
 
         if (topRoutesList.size() > 3) {
             topRoutesList = topRoutesList.subList(0, 3);
         }
+
+
+//        отбрасываем дубликаты
+        topRoutesList = topRoutesList.stream().distinct().collect(Collectors.toList());
 
         return topRoutesList;
     }

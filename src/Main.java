@@ -4,17 +4,19 @@ public class Main {
     public static void main(String[] args) {
         Navigator navigator = new NavigatorImpl();
 
-        Route route1 = new Route( "route1", Arrays.asList("A", "B", "C"), true);
-        Route route2 = new Route( "route2", Arrays.asList("B", "C", "D"), false);
-        Route route3 = new Route("route3", Arrays.asList("A", "C", "E"), true);
-        Route route7 = new Route("route7", Arrays.asList("A", "D", "E"), true);
-        Route route8 = new Route("route8", Arrays.asList("И", "Ф", "E"), true);
-        Route route9 = new Route("route9", Arrays.asList("A", "E", "K", "B"), true);
-        Route route10 = new Route("route10", Arrays.asList("E", "K"), true);
-        Route route11 = new Route("route11", Arrays.asList("A", "K", "E", "M"), false);
-        Route route12 = new Route("route12", Arrays.asList("A", "E", "M"), false);
+        Route route1 = new Route( "route1", 1 ,Arrays.asList("A", "B", "C"), true);
+        Route route2 = new Route( "route2", 2 ,Arrays.asList("B", "C", "D"), false);
+        Route route3 = new Route("route3", 4 ,Arrays.asList("A", "C", "E"), false);
+        Route route7 = new Route("route7", 1 ,Arrays.asList("A", "D", "E"), true);
+        Route route8 = new Route("route8", 4 ,Arrays.asList("И", "Ф", "E"), true);
+        Route route9 = new Route("route9", 10 ,Arrays.asList("A", "E", "K", "B"), true);
+        Route route10 = new Route("route10", 0.5 ,Arrays.asList("E", "K"), true);
+        Route route11 = new Route("route11", 11 ,Arrays.asList("A", "K", "E", "M"), false);
+        Route route12 = new Route("route12", 12 ,Arrays.asList("A", "E", "M"), false);
 
-        Route route4 = new Route("route4", Arrays.asList("C", "D", "K", "F"), true);
+        Route route4 = new Route("route4", 11.5 ,Arrays.asList("C", "D", "K", "F"), true);
+
+        Route route6 = new Route("route6", 4 ,Arrays.asList("A", "C", "E"), false);
 
         navigator.addRoute(route1);
         navigator.addRoute(route2);
@@ -26,6 +28,7 @@ public class Main {
         navigator.addRoute(route10);
         navigator.addRoute(route11);
         navigator.addRoute(route12);
+        navigator.addRoute(route6);
 
         System.out.println("Наличие маршрута route1: " + navigator.contains(route1)); // true
         System.out.println("Наличие маршрута route4: " + navigator.contains(route4)); // true
@@ -49,7 +52,6 @@ public class Main {
         navigator.chooseRoute("route12");
 
 
-        System.out.println("Обновленный маршрут route3: " + navigator.getRoute("route3")); // Route(id=route3, locationPoints=[A, C, E], favorite=true, popularity=1)
 
         Iterable<Route> matchingRoutes1 = navigator.searchRoutes("A", "E");
         System.out.println("Маршруты с точками отправления A и прибытия E:");
@@ -71,5 +73,7 @@ public class Main {
 
         navigator.removeRoute("route4");
         System.out.println("Размер навигатора после удаления маршрута: " + navigator.size());
+
+        System.out.println(navigator.getRoute("route1"));
     }
 }
