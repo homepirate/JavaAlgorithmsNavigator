@@ -106,7 +106,6 @@ public class NavigatorImpl implements Navigator {
         Collections.sort(matchingRoutes, Comparator.comparingDouble(Route::getDistance).reversed()
                 .thenComparingInt(Route::getPopularity).reversed());
 
-
         //        отбрасываем дубликаты
         matchingRoutes = matchingRoutes.stream().distinct().collect(Collectors.toList());
 
@@ -122,6 +121,9 @@ public class NavigatorImpl implements Navigator {
         for (Entry<Route> entry : routesTable) {
             topRoutesList.add(entry.getValue());
         }
+
+
+
 
         Collections.sort(topRoutesList, (r1, r2) -> {
             // Сначала сортируем список по популярности
@@ -145,7 +147,7 @@ public class NavigatorImpl implements Navigator {
         }
 
 
-//        отбрасываем дубликаты
+        //        отбрасываем дубликаты
         topRoutesList = topRoutesList.stream().distinct().collect(Collectors.toList());
 
         return topRoutesList;
