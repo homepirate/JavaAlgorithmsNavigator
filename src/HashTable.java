@@ -177,6 +177,20 @@ public class HashTable<T> implements Iterable<Entry<T>> {
         return keys;
     }
 
+
+    public Iterable<T> values() {
+        LinkedList<T> values = new LinkedList<>();
+
+        for (LinkedList<Entry<T>> bucket : slots) {
+            for (Entry<T> entry : bucket) {
+                values.add(entry.getValue());
+            }
+        }
+        return values;
+    }
+
+
+
     @Override
     public Iterator<Entry<T>> iterator() {
             LinkedList<Entry<T>> allEntries = new LinkedList<>();

@@ -11,7 +11,7 @@ public class Route {
     public Route(String id, double distance, List<String> locationPoints, boolean isFavorite) {
         this.id = id;
         this.distance = distance;
-        this.popularity = 0; // По умолчанию популярность равна 0
+        this.popularity = 0;
         this.isFavorite = isFavorite;
         this.locationPoints = locationPoints;
     }

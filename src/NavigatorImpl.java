@@ -11,7 +11,17 @@ public class NavigatorImpl implements Navigator {
 
     @Override
     public void addRoute(Route route) {
-        routesTable.add(route.getId(), route);
+        boolean isDuplicate = false;
+
+        for (Route existingRoute : routesTable.values()) {
+            if (existingRoute.equals(route)) {
+                isDuplicate = true;
+                break;
+            }
+        }
+        if (!isDuplicate) {
+            routesTable.add(route.getId(), route);
+        }
     }
 
     @Override
